@@ -1,45 +1,45 @@
-import os 
+import os
 from dotenv import load_dotenv
-from agents import OpenAIChatCompletionsModel,AsyncOpenAI,RunConfig,Agent,Runner
+from agents import AsyncOpenAI, OpenAIChatCompletionsModel,RunConfig,Agent,Runner
 import chainlit as cl
-
 
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-
 if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY is not set...")
+    raise ValueError("GEMINI API KE is not set...")
 
 
 provider = AsyncOpenAI(
-    api_key = GEMINI_API_KEY,
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"     
+    api_key=GEMINI_API_KEY,
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 
-
 model = OpenAIChatCompletionsModel(
-    model = "gemini-2.0-flash",
+    model="gemini-2.0-flash",
     openai_client=provider
 )
 
-config = RunConfig(
-    model=model,
+config= RunConfig(
+    model= model,
     model_provider=provider,
     tracing_disabled=True
 )
 
-
-agent = Agent(
-    name="chatbot",
-    instructions="you are a developer agent.",
+agent= Agent(
+    name="Assistant",
+    instructions="You are a medical Assistant.",
     model=model
 )
 
 
-# result = Runner.run_sync(agent,"create a coffee website using html.",run_config=config)
-# print(result.final_output)
+result = Runner.run_sync(
+    agent, 
+    "What is Cardiac Arrest?",
+    run_config=config
+)
 
+print(result.final_output)
 
 
 @cl.on_chat_start
@@ -60,7 +60,6 @@ async def handle_message(message: cl.Message):
       
         result = await Runner.run(agent, input=user_input, run_config=config)
 
-        
         loading_msg.content = f"### Agent's Response\n\n{result.final_output.strip()}"
         await loading_msg.update()
 
