@@ -1,4 +1,4 @@
-# 🧠 Multiagents System – Chainlit x OpenAI Deployment
+# 🧠 agent – Chainlit x OpenAI Deployment
 
 This is a simple agent built using the OpenAI Agent SDK, Gemini API and Chainlit. The project is deployed on **Railway** for public access and testing.
 
